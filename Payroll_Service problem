@@ -1,0 +1,170 @@
+UC1 - create a payroll service database
+ CREATE DATABASE Payroll_Service;
+Query OK, 1 row affected (0.02 sec)
+UC2 -create a employee payroll table in the payroll service database to manage employee payrolls
+ CREATE TABLE Employee_Payroll (id int PRIMARY KEY AUTO_INCREMENT , Name varchar(20) , Salary int , Start_Date DATE);
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> DESC Employee_Payroll;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| Name       | varchar(20) | YES  |     | NULL    |                |
+| Salary     | int         | YES  |     | NULL    |                |
+| Start_Date | date        | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+4 rows in set (0.04 sec)
+UC3 - create employee payroll data in the payroll service database
+INSERT INTO Employee_Payroll VALUES(1,"Prachi Mohanty",38000,'2022-02-07');
+Query OK, 1 row affected (0.01 sec)
+
+INSERT INTO Employee_Payroll VALUES(2,"Priyam Mohanty",25500,'2022-01-03');
+Query OK, 1 row affected (0.01 sec)
+UC4 - employee payroll data that is added to payroll service database
+
+ SELECT * FROM Employee_Payroll;
++----+----------------+--------+------------+
+| id | Name           | Salary | Start_Date |
++----+----------------+--------+------------+
+|  1 | Prachi Mohanty |  38000 | 2022-02-07 |
+|  2 | Priyam Mohanty |  25500 | 2022-01-03 |
++----+----------------+--------+------------+
+2 rows in set (0.00 sec)
+
+UC5 - retrieve salary data for a particular employee as well as all employees who have joined in a particular data range from the payroll service database
+SELECT Salary FROM Employee_Payroll WHERE name = "Prachi Mohanty";
++--------+
+| Salary |
++--------+
+|  38000 |
++--------+
+1 row in set (0.00 sec)
+ SELECT Name, Start_Date FROM Employee_Payroll WHERE Start_Date Between CAST('2022-01-01' AS DATE) AND DATE (NOW());
++----------------+------------+
+| Name           | Start_Date |
++----------------+------------+
+| Prachi Mohanty | 2022-02-07 |
+| Priyam Mohanty | 2022-01-03 |
++----------------+------------+
+2 rows in set (0.00 sec)
+
+UC6 - add Gender to Employee Payroll Table and Update the Rows to reflect the correct Employee Gender
+
+ALTER TABLE Employee_Payroll ADD Gender varchar(6);
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+UPDATE Employee_Payroll SET Gender = "Male" WHERE Name = "Priyam Mohanty";
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+SELECT * FROM Employee_Payroll;
++----+----------------+--------+------------+--------+
+| id | Name           | Salary | Start_Date | Gender |
++----+----------------+--------+------------+--------+
+|  1 | Prachi Mohanty |  38000 | 2022-02-07 | NULL   |
+|  2 | Priyam Mohanty |  25500 | 2022-01-03 | Male   |
++----+----------------+--------+------------+--------+
+2 rows in set (0.00 sec)
+
+UC7 - find sum, average, min, max and number of male and female employees
+SELECT AVG(Salary) FROM Employee_Payroll GROUP BY Gender;
++-------------+
+| AVG(Salary) |
++-------------+
+|  38000.0000 |
+|  25500.0000 |
++-------------+
+2 rows in set (0.00 sec)
+
+SELECT MIN(Salary) FROM Employee_Payroll GROUP BY Gender;
++-------------+
+| MIN(Salary) |
++-------------+
+|       38000 |
+|       25500 |
++-------------+
+2 rows in set (0.00 sec)
+SELECT MAX(Salary) FROM Employee_Payroll GROUP BY Gender;
++-------------+
+| MAX(Salary) |
++-------------+
+|       38000 |
+|       25500 |
++-------------+
+2 rows in set (0.00 sec)
+ SELECT Gender , COUNT(Gender) FROM Employee_Payroll GROUP BY Gender;
++--------+---------------+
+| Gender | COUNT(Gender) |
++--------+---------------+
+| NULL   |             0 |
+| Male   |             1 |
++--------+---------------+
+2 rows in set (0.00 sec)
+
+UC8 - Ability to extend employee_payroll data to store employee information like employee phone, address and department
+ALTER TABLE Employee_Payroll ADD Phone int , ADD Address varchar(50) DEFAULT 'Odisha', ADD Department varchar(50) NOT NULL;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+SELECT * FROM Employee_Payroll;
++----+----------------+--------+------------+--------+-------+---------+------------+
+| id | Name           | Salary | Start_Date | Gender | Phone | Address | Department |
++----+----------------+--------+------------+--------+-------+---------+------------+
+|  1 | Prachi Mohanty |  38000 | 2022-02-07 | NULL   |  NULL | Odisha  |            |
+|  2 | Priyam Mohanty |  25500 | 2022-01-03 | Male   |  NULL | Odisha  |            |
++----+----------------+--------+------------+--------+-------+---------+------------+
+2 rows in set (0.00 sec)
+
+UC9 - Ability to extend employee_payroll table to have Basic Pay, Deductions, Taxable Pay,Income Tax, Net Pay
+
+ALTER TABLE Employee_Payroll ADD Basic_Pay int , ADD Deductions int , ADD Taxable_Pay int, ADD Income_Tax int , ADD Net_Pay int;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+SELECT * FROM Employee_Payroll;
++----+----------------+--------+------------+--------+-------+---------+------------+-----------+------------+-------------+------------+---------+
+| id | Name           | Salary | Start_Date | Gender | Phone | Address | Department | Basic_Pay | Deductions | Taxable_Pay | Income_Tax | Net_Pay |
++----+----------------+--------+------------+--------+-------+---------+------------+-----------+------------+-------------+------------+---------+
+|  1 | Prachi Mohanty |  38000 | 2022-02-07 | NULL   |  NULL | Odisha  |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  2 | Priyam Mohanty |  25500 | 2022-01-03 | Male   |  NULL | Odisha  |            |      NULL |       NULL |        NULL |       NULL |    NULL |
++----+----------------+--------+------------+--------+-------+---------+------------+-----------+------------+-------------+------------+---------+
+2 rows in set (0.00 sec)
+
+UC10 - Ability to make Terissa as part of Sales and Marketing Department
+
+CREATE TABLE Department (Department_id int PRIMARY KEY , Name varchar(30), Department varchar(30) NOT NULL, Employee_id int , FOREIGN KEY (Employee_id) REFERENCES Employee_Payroll(id) );
+Query OK, 0 rows affected (0.08 sec)
+
+DESC Department;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| Department_id | int         | NO   | PRI | NULL    |       |
+| Name          | varchar(30) | YES  |     | NULL    |       |
+| Department    | varchar(30) | NO   |     | NULL    |       |
+| Employee_id   | int         | YES  | MUL | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+ALTER TABLE Employee_Payroll DROP COLUMN Department;
+Query OK, 0 rows affected (0.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+INSERT INTO Employee_Payroll VALUES (4, 'Sujata',76000, '2022-02-06' , 'Female',34545, 'NY',12435,546,456,654,654);
+Query OK, 1 row affected (0.01 sec)
+
+INSERT INTO Department VALUES (2,'Sujata', 'Marketing',4);
+Query OK, 1 row affected (0.02 sec)
+
+ INSERT INTO Department VALUES (2,'Sujata', 'Sales',4);
+ERROR 1062 (23000): Duplicate entry '2' for key 'department.PRIMARY'
+ SELECT * FROM Employee_Payroll LEFT JOIN Department ON Employee_Payroll.id = Department.Employee_id;
++----+----------------+--------+------------+--------+-------+---------+-----------+------------+-------------+------------+---------+---------------+--------+------------+-------------+
+| id | Name           | Salary | Start_Date | Gender | Phone | Address | Basic_Pay | Deductions | Taxable_Pay | Income_Tax | Net_Pay | Department_id | Name   | Department | Employee_id |
++----+----------------+--------+------------+--------+-------+---------+-----------+------------+-------------+------------+---------+---------------+--------+------------+-------------+
+|  1 | Prachi Mohanty |  38000 | 2022-02-07 | NULL   |  NULL | Odisha  |      NULL |       NULL |        NULL |       NULL |    NULL |          NULL | NULL   | NULL       |        NULL |
+|  2 | Priyam Mohanty |  25500 | 2022-01-03 | Male   |  NULL | Odisha  |      NULL |       NULL |        NULL |       NULL |    NULL |          NULL | NULL   | NULL       |        NULL |
+|  4 | Sujata         |  76000 | 2022-02-06 | Female | 34545 | NY      |     12435 |        546 |         456 |        654 |     654 |             2 | Sujata | Marketing  |           4 |
++----+----------------+--------+------------+--------+-------+---------+-----------+------------+-------------+------------+---------+---------------+--------+------------+-------------+
+3 rows in set (0.00 sec)
